@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+// 1. User Model: Handles both Organizers and Attendees
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String         // Hashed password for security
+  role          Role           @default(ATTENDEE)
+  
+  // Relations
+  eventsCreated Event[]        @relation("OrganizerEvents")
+  registrations Registration[] // The events this user has signed up for
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+enum Role {
+  ORGANIZER
+  ATTENDEE
+  ADMIN
+}
+
+// 2. Event Model: The actual events being hosted
+model Event {
+  id           String         @id @default(uuid())
+  title        String
+  description  String
+  location     String
+  date         DateTime
+  price        Float          @default(0.0)
+  capacity     Int            // To handle limited seating
+  
+  // Relations
+  organizerId  String
+  organizer    User           @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  attendees    Registration[]
+  
+  createdAt    DateTime       @default(now())
+}
+
+// 3. Registration Model: The "Join Table" that links Users to Events
+// This satisfies the "Submit registration forms" and "Cancel" requirements.
+model Registration {
+  id        String             @id @default(uuid())
+  status    RegistrationStatus @default(CONFIRMED)
+  
+  // Relations
+  userId    String
+  user      User               @relation(fields: [userId], references: [id])
+  eventId   String
+  event     Event              @relation(fields: [eventId], references: [id])
+  
+  // For your "Buy Ticket" logic
+  paymentRef String?           @unique // Store Paystack reference here
+  
+  createdAt DateTime           @default(now())
+
+  @@unique([userId, eventId])   // Ensures a user can't register for the same event twice
+}
+
+enum RegistrationStatus {
+  CONFIRMED
+  CANCELLED
+  PENDING
+}
