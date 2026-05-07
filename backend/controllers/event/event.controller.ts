@@ -17,6 +17,10 @@ export const CreateEvent = asyncHandler(async (req, res) => {
 
   // Generate the slug: "My Awesome Party" -> "my-awesome-party-x1y2z"
   const generatedSlug = `${slugify(title, { lower: true, strict: true })}-${nanoid(5)}`;
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) {
+    throw new ErrorResponse("Invalid event date", 400);
+  }
 
   const event = await prisma.event.create({
     data: {
@@ -59,6 +63,7 @@ export const UpdateEvent = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // 1. Find the event
+
   let event = await prisma.event.findUnique({ where: { id } });
 
   if (!event) {
@@ -93,8 +98,6 @@ export const DeleteEvent = asyncHandler(async (req, res) => {
   if (event.organizerId !== req.user.id) {
     throw new ErrorResponse("User not authorized to delete this event", 403);
   }
-
-  await prisma.event.delete({ where: { id } });
 
   res.status(200).json({ success: true, message: "Event removed" });
 });
