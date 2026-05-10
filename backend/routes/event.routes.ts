@@ -1,6 +1,4 @@
 import express from "express";
-const router = express.Router();
-
 import {
   CreateEvent,
   GetAllEvents,
@@ -9,8 +7,10 @@ import {
   DeleteEvent,
   GetMyEvents,
   GetMyEvent,
-} from "../controllers/event/event.controller";
-import Protect from "../middlewares/protect.middleware";
+} from "../controllers/event/event.controller.js";
+import Protect from "../middlewares/protect.middleware.js";
+
+const router = express.Router();
 // Public routes
 router.get("/", GetAllEvents);
 router.get("/public/:slug", GetEvent);

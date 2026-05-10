@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import slugify from "slugify";
 import { nanoid } from "nanoid";
-import ErrorResponse from "../../utils/errorResponse";
-import { prisma } from "../../lib/prisma";
-import asyncHandler from "../../middlewares/asynchandler";
+import ErrorResponse from "../../utils/errorResponse.js";
+import { prisma } from "../../lib/prisma.js";
+import asyncHandler from "../../middlewares/asynchandler.js";
 
 // CREATE EVENT
 export const CreateEvent = asyncHandler(async (req, res) => {

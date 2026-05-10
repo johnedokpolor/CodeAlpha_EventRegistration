@@ -1,11 +1,11 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-import { errorMiddleware } from "./middlewares/error.middleware";
-import { prisma } from "./lib/prisma";
-import AuthRoutes from "./routes/auth.routes";
-import EventRoutes from "./routes/event.routes";
-import RegistrationRoutes from "./routes/registration.routes";
+import { errorMiddleware } from "./middlewares/error.middleware.js";
+import { prisma } from "./lib/prisma.js";
+import AuthRoutes from "./routes/auth.routes.js";
+import EventRoutes from "./routes/event.routes.js";
+import RegistrationRoutes from "./routes/registration.routes.js";
 
 const app = express();
 

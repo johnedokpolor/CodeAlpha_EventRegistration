@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/prisma";
-import asyncHandler from "../../middlewares/asynchandler";
-import ErrorResponse from "../../utils/errorResponse";
+import { prisma } from "../../lib/prisma.js";
+import asyncHandler from "../../middlewares/asynchandler.js";
+import ErrorResponse from "../../utils/errorResponse.js";
 
 export const JoinEvent = asyncHandler(async (req, res) => {
   const { eventId } = req.body;

@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/prisma";
-import asyncHandler from "../../middlewares/asynchandler";
-import ErrorResponse from "../../utils/errorResponse";
+import { prisma } from "../../lib/prisma.js";
+import asyncHandler from "../../middlewares/asynchandler.js";
+import ErrorResponse from "../../utils/errorResponse.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -30,26 +30,23 @@ export const Login = asyncHandler(async (req, res) => {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) throw new ErrorResponse("Email does not exist, try again", 400);
-  
+
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch)
     throw new ErrorResponse("Password is incorrect, try again", 400);
 
   const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret)
-    throw new ErrorResponse("JWT secret is not configured", 500);
+  if (!jwtSecret) throw new ErrorResponse("JWT secret is not configured", 500);
 
   const token = jwt.sign({ id: user.id }, jwtSecret, {
     expiresIn: "7d",
   });
 
-  res
-    .status(200)
-    .json({
-      success: true,
-      token,
-      user: { name: user.name, email: user.email, role: user.role },
-    });
+  res.status(200).json({
+    success: true,
+    token,
+    user: { name: user.name, email: user.email, role: user.role },
+  });
 });
 
 export const GetMe = asyncHandler(async (req, res) => {
