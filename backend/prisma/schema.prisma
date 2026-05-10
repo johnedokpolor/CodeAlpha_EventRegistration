@@ -41,7 +41,7 @@ model Event {
   location     String
   date         DateTime
   price        Float          @default(0.0)
-  capacity     Int            // To handle limited seating
+  capacity     Int?            // To handle limited seating
   
   // Relations
   organizerId  String

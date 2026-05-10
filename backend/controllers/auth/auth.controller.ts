@@ -26,8 +26,11 @@ export const Register = asyncHandler(async (req, res) => {
 
 export const Login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
   const user = await prisma.user.findUnique({ where: { email } });
+
   if (!user) throw new ErrorResponse("Email does not exist, try again", 400);
+  
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch)
     throw new ErrorResponse("Password is incorrect, try again", 400);

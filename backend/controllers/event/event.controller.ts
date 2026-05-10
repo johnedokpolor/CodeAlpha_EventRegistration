@@ -5,12 +5,6 @@ import ErrorResponse from "../../utils/errorResponse";
 import { prisma } from "../../lib/prisma";
 import asyncHandler from "../../middlewares/asynchandler";
 
-interface AuthRequest extends Request {
-  user: {
-    id: string;
-  };
-}
-
 // CREATE EVENT
 export const CreateEvent = asyncHandler(async (req, res) => {
   const { title, description, date, location } = req.body;
@@ -33,23 +27,42 @@ export const CreateEvent = asyncHandler(async (req, res) => {
     },
   });
 
+  // Change role to ORGANIZER if it's the user's first event
+  const organizer = await prisma.user.findUnique({
+    where: { id: req.user.id },
+  });
+  if (organizer?.role === "ATTENDEE") {
+    await prisma.user.update({
+      where: { id: organizer.id },
+      data: { role: "ORGANIZER" },
+    });
+  }
+
   res.status(201).json({ success: true, data: event });
 });
 
-// GET ALL EVENTS
-export const GetAllEvents = asyncHandler(async (req, res) => {
+// GET ALL EVENTS BY YOU
+export const GetMyEvents = asyncHandler(async (req, res) => {
   const events = await prisma.event.findMany({
+    where: { organizerId: req.user.id },
     orderBy: { date: "asc" },
+    include: {
+      attendees: { select: { user: { select: { name: true, email: true } } } },
+      _count: { select: { attendees: true } },
+    },
   });
   res.status(200).json({ success: true, data: events });
 });
-// GET SINGLE EVENT BY SLUG
-export const GetEvent = asyncHandler(async (req, res) => {
-  const { slug } = req.params;
+// GET SINGLE EVENT BY ID BY YOU
+export const GetMyEvent = asyncHandler(async (req, res) => {
+  const id = req.params.id as string;
 
   const event = await prisma.event.findFirst({
-    where: { slug },
-    include: { organizer: { select: { name: true, email: true } } },
+    where: { id, organizerId: req.user.id },
+    include: {
+      attendees: { select: { user: { select: { name: true, email: true } } } },
+      _count: { select: { attendees: true } },
+    },
   });
 
   if (!event) {
@@ -60,7 +73,8 @@ export const GetEvent = asyncHandler(async (req, res) => {
 });
 // UPDATE EVENT
 export const UpdateEvent = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
+  const { title } = req.body;
 
   // 1. Find the event
 
@@ -74,11 +88,11 @@ export const UpdateEvent = asyncHandler(async (req, res) => {
   if (event.organizerId !== req.user.id) {
     throw new ErrorResponse("User not authorized to update this event", 403);
   }
-
+  const generatedSlug = `${slugify(title, { lower: true, strict: true })}-${nanoid(5)}`;
   // 3. Update the event
   event = await prisma.event.update({
     where: { id },
-    data: req.body, // In production, it's safer to destructure specific fields
+    data: { ...req.body, slug: generatedSlug },
   });
 
   res.status(200).json({ success: true, data: event });
@@ -86,7 +100,7 @@ export const UpdateEvent = asyncHandler(async (req, res) => {
 
 // DELETE EVENT
 export const DeleteEvent = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   const event = await prisma.event.findUnique({ where: { id } });
 
@@ -100,4 +114,56 @@ export const DeleteEvent = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({ success: true, message: "Event removed" });
+});
+
+export const GetAttendees = asyncHandler(async (req, res) => {
+  const eventId = req.params.eventId as string;
+
+  const event = await prisma.event.findUnique({ where: { id: eventId } });
+
+  if (event?.organizerId !== req.user.id) {
+    throw new ErrorResponse(
+      "Only the organizer can see the attendee list",
+      403,
+    );
+  }
+
+  const attendees = await prisma.registration.findMany({
+    where: { eventId },
+    include: { user: { select: { name: true, email: true } } },
+  });
+
+  res.status(200).json({ success: true, data: attendees });
+});
+
+// GET ALL EVENTS
+export const GetAllEvents = asyncHandler(async (req, res) => {
+  const events = await prisma.event.findMany({
+    orderBy: { date: "asc" },
+    include: {
+      organizer: { select: { name: true } },
+
+      _count: { select: { attendees: true } },
+    },
+  });
+  res.status(200).json({ success: true, data: events });
+});
+// GET SINGLE EVENT BY SLUG
+export const GetEvent = asyncHandler(async (req, res) => {
+  const slug = req.params.slug as string;
+
+  const event = await prisma.event.findFirst({
+    where: { slug },
+    include: {
+      organizer: { select: { name: true } },
+
+      _count: { select: { attendees: true } },
+    },
+  });
+
+  if (!event) {
+    throw new ErrorResponse("Event not found", 404);
+  }
+
+  res.status(200).json({ success: true, data: event });
 });

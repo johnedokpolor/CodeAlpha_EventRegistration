@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { prisma } from "./lib/prisma";
 import AuthRoutes from "./routes/auth.routes";
 import EventRoutes from "./routes/event.routes";
+import RegistrationRoutes from "./routes/registration.routes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/events", EventRoutes);
+app.use("/api/registrations", RegistrationRoutes);
 
 // Error handler
 app.use(errorMiddleware);
@@ -32,7 +34,7 @@ const startServer = async () => {
       console.log("Server is on port " + PORT);
     });
   } catch (error) {
-    console.error("Database connection failed");
+    console.error("Database connection failed", error);
     process.exit(1);
   }
 };
