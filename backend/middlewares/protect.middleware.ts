@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import ErrorResponse from "../utils/errorResponse";
-import { prisma } from "../lib/prisma";
-import asyncHandler from "./asynchandler";
+import ErrorResponse from "../utils/errorResponse.js";
+import { prisma } from "../lib/prisma.js";
+import asyncHandler from "./asynchandler.js";
 
 // Extend the Express Request type locally
 interface AuthRequest extends Request {
@@ -24,27 +24,23 @@ const Protect = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse("Not authorized to access this route", 401);
   }
 
-  try {
-    // 2. Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+  // 2. Verify token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
 
-    // 3. Attach user to the request object
-    req.user = await prisma.user.findUnique({
-      where: { id: decoded.id },
-      select: {
-        id: true,
-        name: true,
-        role: true,
-        email: true,
-        eventsCreated: true,
-        registrations: true,
-      }, // Don't fetch the password
-    });
+  // 3. Attach user to the request object
+  req.user = await prisma.user.findUnique({
+    where: { id: decoded.id },
+    select: {
+      id: true,
+      name: true,
+      role: true,
+      email: true,
+      eventsCreated: true,
+      registrations: true,
+    }, // Don't fetch the password
+  });
 
-    next();
-  } catch (error) {
-    throw new ErrorResponse("Not authorized to access this route", 401);
-  }
+  next();
 });
 
 export default Protect;
