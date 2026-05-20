@@ -2,11 +2,16 @@ import { useAuth } from "../context/AuthContext";
 import api from "../hooks/axios-instance";
 import { Event, User, Registration } from "./types";
 
-export const getAllEvents = async () => {
-  const { data } = await api.get("/api/events");
-  return data.data;
-};
+const token = localStorage.getItem("token");
+if (!token) {
+  console.log("No token found");
+}
 
+const config = {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+};
 // Event Store
 export const eventStore = {
   getAllEvents: async () => {
@@ -42,9 +47,14 @@ export const eventStore = {
 
 // Registration Store
 export const registrationStore = {
-  getRegistrationsByUser: async (): Promise<Registration[]> => {
-    const { data } = await api.get(`/api/registrations/join`);
-    return data;
+  getRegistrationsByUser: async () => {
+    try {
+      const { data } = await api.get(`/api/registrations/join`, config);
+      console.log(data);
+      return data.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   register: async (eventId: string): Promise<Registration> => {
@@ -60,27 +70,49 @@ export const registrationStore = {
 
 // User Store
 export const userStore = {
-  getCurrentUser: async (): Promise<User> => {
-    const { data } = await api.get(`/api/auth/me`);
-    return data;
+  getCurrentUser: async () => {
+    try {
+      const { data } = await api.get(`/api/auth/me`, config);
+      console.log("Current user:", data); // Debugging line
+      return data;
+    } catch (error: any) {
+      console.log("Error fetching current user:", error.message); // Debugging line
+
+      return Promise.reject(error.message);
+    }
   },
 
-  register: async (user: User): Promise<User> => {
-    const { data } = await api.post("/api/auth/register", user);
-    return data.user;
+  register: async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<User> => {
+    try {
+      const { data } = await api.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      });
+      console.log(data.user);
+      return data.user;
+    } catch (error: any) {
+      console.log("Registration error:", error.message);
+      return Promise.reject(error.message);
+    }
   },
 
   login: async (email: string, password: string) => {
     try {
       console.log("data", email, password);
       const response = await api.post("/api/auth/login", { email, password });
-      console.log("Login response:", response); // Debugging line
+      console.log(response.data.user); // Debugging line
 
       localStorage.setItem("token", response.data.token);
 
       return response.data.user;
     } catch (error: any) {
-      console.log("Login error:", error.response.data); // Debugging line
+      console.log("Login error:", error.message); // Debugging line
+      return Promise.reject(error.message);
     }
   },
 

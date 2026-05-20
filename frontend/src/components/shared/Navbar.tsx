@@ -6,14 +6,14 @@ import SignupModal from "../auth/SignupModal";
 import { Menu, X, LogOut, Calendar } from "lucide-react";
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signinOpen, setSigninOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
 
   const handleLogout = () => {
-    logout();
+    // logout();
     navigate("/");
   };
 

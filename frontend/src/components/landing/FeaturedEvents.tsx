@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 interface FeaturedEventsProps {
-  events: Event[];
+  events: Event[] | null;
 }
 
 export default function FeaturedEvents({ events }: FeaturedEventsProps) {
@@ -30,7 +30,7 @@ export default function FeaturedEvents({ events }: FeaturedEventsProps) {
           </button>
         </div>
 
-        {events.length === 0 ? (
+        {events?.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
               No events available at the moment
@@ -38,7 +38,7 @@ export default function FeaturedEvents({ events }: FeaturedEventsProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.slice(0, 6).map((event) => (
+            {events?.slice(0, 6).map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>

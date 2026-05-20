@@ -12,7 +12,6 @@ export interface Event {
   description: string;
   date: string;
   location: string;
-  category: string;
   capacity: number;
   slug: string;
   organizerId: string;
@@ -40,4 +39,6 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
   setUser: (user: User | null) => void;
+  allEvents: Event[] | null;
+  setAllEvents: (events: Event[] | null) => void;
 }

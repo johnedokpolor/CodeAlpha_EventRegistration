@@ -4,12 +4,12 @@ import Hero from "../components/landing/Hero";
 import FeaturedEvents from "../components/landing/FeaturedEvents";
 import Testimonials from "../components/landing/Testimonials";
 import CTASection from "../components/landing/CTASection";
-import { eventStore, getAllEvents } from "../lib/store";
-import { useEffect, useState } from "react";
+import { eventStore } from "../lib/store";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Landing() {
-  const [allEvents, setAllEvents] = useState([]);
-
+  const { allEvents, setAllEvents } = useAuth();
   useEffect(() => {
     const fetchEvents = async () => {
       const events = await eventStore.getAllEvents();

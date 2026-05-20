@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
+import { userStore } from "../../lib/store";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -13,12 +14,10 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<"organizer" | "attendee">("attendee");
   const [error, setError] = useState("");
-  const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -43,21 +42,17 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
     }
 
     try {
-      signup(name, email, password, role);
+      await userStore.register(name, email, password);
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       onClose();
+      alert("Registration successful! Please sign in.");
 
       // Navigate to appropriate dashboard
-      if (role === "organizer") {
-        navigate("/organizer");
-      } else {
-        navigate("/attendee");
-      }
-    } catch (err) {
-      setError("Sign up failed. Please try again.");
+    } catch (err: any) {
+      setError(err);
     }
   };
 
@@ -135,42 +130,7 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              I want to:
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="role"
-                  value="attendee"
-                  checked={role === "attendee"}
-                  onChange={(e) => setRole(e.target.value as "attendee")}
-                  className="w-4 h-4"
-                />
-                <span className="text-sm text-foreground">Attend Events</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="role"
-                  value="organizer"
-                  checked={role === "organizer"}
-                  onChange={(e) => setRole(e.target.value as "organizer")}
-                  className="w-4 h-4"
-                />
-                <span className="text-sm text-foreground">
-                  Create & Organize Events
-                </span>
-              </label>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:opacity-90 transition font-medium"
-          >
+          <button className="w-full bg-primary border py-2 rounded-lg hover:opacity-90 transition font-medium">
             Create Account
           </button>
 

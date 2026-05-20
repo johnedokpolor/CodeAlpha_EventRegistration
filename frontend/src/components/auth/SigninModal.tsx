@@ -32,26 +32,25 @@ export default function SigninModal({ isOpen, onClose }: SigninModalProps) {
 
     try {
       const user = await userStore.login(email, password);
-      console.log(user);
 
-      // setEmail("");
-      // setPassword("");
-      // setUser(user);
-      // setIsAuthenticated(true);
-      // onClose();
+      setEmail("");
+      setPassword("");
+      setUser(user);
+      setIsAuthenticated(true);
+      onClose();
 
       // Navigate to appropriate dashboard
-      if (user.role === "organizer") {
+      if (user.role === "ORGANIZER") {
         navigate("/organizer");
       } else {
         navigate("/attendee");
       }
-    } catch (err) {
-      setError("Sign in failed. Please try again.");
+    } catch (err: any) {
+      setError(err);
     }
   };
 
-  // if (!isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">

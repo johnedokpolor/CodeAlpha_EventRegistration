@@ -1,19 +1,13 @@
-import { Search, X } from 'lucide-react';
+import { Search, X } from "lucide-react";
 
 interface EventFiltersProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  categories: string[];
 }
 
 export default function EventFilters({
   searchTerm,
   onSearchChange,
-  selectedCategory,
-  onCategoryChange,
-  categories,
 }: EventFiltersProps) {
   return (
     <div className="bg-white border border-border rounded-lg p-4 md:p-6 mb-8">
@@ -34,44 +28,12 @@ export default function EventFilters({
             />
             {searchTerm && (
               <button
-                onClick={() => onSearchChange('')}
+                onClick={() => onSearchChange("")}
                 className="absolute right-3 top-3 p-1 hover:bg-secondary rounded transition"
               >
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             )}
-          </div>
-        </div>
-
-        {/* Categories */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Category
-          </label>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => onCategoryChange('')}
-              className={`px-4 py-2 rounded-lg transition text-sm font-medium ${
-                selectedCategory === ''
-                  ? 'bg-primary text-white'
-                  : 'bg-secondary text-foreground hover:bg-secondary/80'
-              }`}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => onCategoryChange(category)}
-                className={`px-4 py-2 rounded-lg transition text-sm font-medium ${
-                  selectedCategory === category
-                    ? 'bg-primary text-white'
-                    : 'bg-secondary text-foreground hover:bg-secondary/80'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
           </div>
         </div>
       </div>
