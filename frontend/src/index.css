@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --background: 222.2 84% 4.9%; /* Dark oceanic navy */
+  --foreground: 210 40% 98%;
+
+  --primary: blue; /* Vivid Emerald Green */
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 12.5%; /* Mid-tone slate block */
+  --secondary-foreground: 210 40% 98%;
+
+  --accent: 142.1 70.6% 45.3%; /* Bright mint accent */
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215.4 16.3% 56.9%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 162.2 93.5% 30.4%;
+  --radius: 0.5rem;
+}
+@layer base {
+}
