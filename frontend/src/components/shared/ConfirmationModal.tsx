@@ -1,4 +1,4 @@
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from "lucide-react";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -17,8 +17,8 @@ export default function ConfirmationModal({
   message,
   onConfirm,
   onCancel,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText = "Confirm",
+  cancelText = "Cancel",
   isDangerous = false,
 }: ConfirmationModalProps) {
   if (!isOpen) return null;
@@ -41,16 +41,16 @@ export default function ConfirmationModal({
         <div className="flex gap-3 p-6 border-t border-border">
           <button
             onClick={onCancel}
-            className="flex-1 px-4 py-2 text-foreground bg-secondary hover:bg-secondary/80 rounded-lg transition font-medium text-sm"
+            className="flex-1 px-4 py-2 border text-foreground bg-secondary hover:bg-secondary/80 rounded-lg transition font-medium text-sm"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
-            className={`flex-1 px-4 py-2 text-white rounded-lg transition font-medium text-sm ${
+            className={`flex-1 px-4 py-2 rounded-lg transition font-medium text-sm ${
               isDangerous
-                ? 'bg-destructive hover:opacity-90'
-                : 'bg-primary hover:opacity-90'
+                ? "bg-destructive border hover:opacity-90"
+                : "bg-primary border hover:opacity-90"
             }`}
           >
             {confirmText}

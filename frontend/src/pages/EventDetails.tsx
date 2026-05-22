@@ -17,6 +17,7 @@ export default function EventDetails() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
   const [relatedEvents, setRelatedEvents] = useState<Event[]>([]);
 
   useEffect(() => {
@@ -30,15 +31,27 @@ export default function EventDetails() {
         const events = await eventStore.getAllEvents();
         setRelatedEvents(events);
       };
-
-      // if (isAuthenticated && user && foundEvent) {
-      //   setIsRegistered(registrationStore.isRegistered(user.id, id));
-      // }
+      const registerdEvents = async () => {
+        const events = await registrationStore.getRegistrationsByUser();
+        setRegisteredEvents(events);
+      };
 
       fetchEvent();
+      registerdEvents();
       fetchRelatedEvents();
+      console.log(isAuthenticated, user);
+      console.log("Registered Events:", registeredEvents); // Debugging log
     }
   }, [slug, isAuthenticated, user]);
+
+  useEffect(() => {
+    if (event && registeredEvents.length > 0) {
+      setIsRegistered(() => {
+        return registeredEvents.some((e) => e.id === event.id);
+      });
+    }
+  }, [event, registeredEvents]);
+  console.log("isregistered", isRegistered);
 
   const handleJoinEvent = () => {
     if (!isAuthenticated) {
@@ -135,10 +148,6 @@ export default function EventDetails() {
 
               {/* Details */}
               <div>
-                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold px-4 py-1 rounded-full mb-4">
-                  {event.category}
-                </div>
-
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                   {event.title}
                 </h1>
@@ -184,13 +193,13 @@ export default function EventDetails() {
                 </div>
 
                 {/* Action Buttons */}
-                {isAuthenticated && user?.role === "attendee" ? (
+                {isAuthenticated && user?.role === "ATTENDEE" ? (
                   <div className="space-y-3">
                     {isRegistered ? (
                       <>
                         <button
                           onClick={handleCancel}
-                          className="w-full bg-destructive text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-medium"
+                          className="w-full bg-destructive border px-6 py-3 rounded-lg hover:opacity-90 transition font-medium"
                         >
                           Cancel Registration
                         </button>
@@ -202,7 +211,7 @@ export default function EventDetails() {
                       <button
                         onClick={handleJoinEvent}
                         disabled={event._count?.attendees >= event.capacity}
-                        className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-primary border px-6 py-3 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {event._count?.attendees >= event.capacity
                           ? "Event Full"
@@ -213,7 +222,7 @@ export default function EventDetails() {
                 ) : !isAuthenticated ? (
                   <button
                     onClick={() => navigate("/")}
-                    className="w-full bg-primary  px-6 py-3 rounded-lg hover:opacity-90 transition font-medium border"
+                    className="w-full bg-primary border px-6 py-3 rounded-lg hover:opacity-90 transition font-medium"
                   >
                     Sign In to Join
                   </button>
@@ -276,12 +285,7 @@ export default function EventDetails() {
                       {event.location}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-muted-foreground mb-1">Category</p>
-                    <p className="font-medium text-foreground">
-                      {event.category}
-                    </p>
-                  </div>
+
                   <div>
                     <p className="text-muted-foreground mb-1">Capacity</p>
                     <p className="font-medium text-foreground">

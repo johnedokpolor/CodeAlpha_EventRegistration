@@ -4,10 +4,7 @@ import ErrorResponse from "../utils/errorResponse.js";
 import { prisma } from "../lib/prisma.js";
 import asyncHandler from "./asynchandler.js";
 
-// Extend the Express Request type locally
-interface AuthRequest extends Request {
-  user?: any;
-}
+
 
 const Protect = asyncHandler(async (req, res, next) => {
   let token;

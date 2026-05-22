@@ -29,7 +29,10 @@ export const JoinEvent = asyncHandler(async (req, res) => {
 export const ViewEvents = asyncHandler(async (req, res) => {
   // 1. Check if event exists and that the user is registered for it
   const events = await prisma.event.findMany({
-    where: { attendees: { some: { userId: req.user.id } } },
+    where: {
+      attendees: { some: { userId: req.user.id } },
+      include: { _count: { select: { attendees: true } } },
+    },
   });
   if (!events) throw new ErrorResponse("Events not found", 404);
 

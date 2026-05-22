@@ -59,13 +59,6 @@ export default function EventCard({
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
-        {/* Category Badge */}
-        <div className="mb-2">
-          <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
-            {event.category}
-          </span>
-        </div>
-
         {/* Title */}
         <h3
           className="text-lg font-bold text-foreground mb-2 line-clamp-2 hover:text-primary cursor-pointer transition"
@@ -130,15 +123,15 @@ export default function EventCard({
                 onClick={onJoin}
                 className={`flex-1 py-2 rounded-lg transition text-sm font-medium flex items-center justify-center gap-2 ${
                   isRegistered
-                    ? "bg-secondary text-foreground hover:bg-destructive hover:text-white"
-                    : "bg-primary text-white hover:opacity-90"
+                    ? "bg-secondary border text-foreground hover:bg-destructive"
+                    : "bg-primary border hover:opacity-90"
                 }`}
               >
                 {isRegistered ? (
-                  <>
+                  <div className="flex items-center gap-1">
                     Registered
                     <ArrowRight className="w-4 h-4" />
-                  </>
+                  </div>
                 ) : (
                   "Join Event"
                 )}

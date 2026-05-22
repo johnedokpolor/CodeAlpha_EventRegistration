@@ -18,7 +18,7 @@ export default function Navbar() {
   };
 
   const handleDashboard = () => {
-    if (user?.role === "organizer") {
+    if (user?.role === "ORGANIZER") {
       navigate("/organizer");
     } else {
       navigate("/attendee");
@@ -57,7 +57,7 @@ export default function Navbar() {
                   >
                     Dashboard
                   </button>
-                  {user?.role === "organizer" && (
+                  {user?.role === "ORGANIZER" && (
                     <button
                       onClick={() => navigate("/create-event")}
                       className="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
@@ -132,7 +132,7 @@ export default function Navbar() {
                   >
                     Dashboard
                   </button>
-                  {user?.role === "organizer" && (
+                  {user?.role === "ORGANIZER" && (
                     <button
                       onClick={() => {
                         navigate("/create-event");

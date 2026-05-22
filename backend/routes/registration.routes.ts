@@ -8,7 +8,7 @@ import {
 import Protect from "../middlewares/protect.middleware.js";
 
 const router = express.Router();
-// Protected routes (only for organizers)
+// Protected routes (only for attendes)
 router.post("/join", Protect, JoinEvent);
 router.get("/join", Protect, ViewEvents);
 router.get("/join/:eventId", Protect, ViewEvent);

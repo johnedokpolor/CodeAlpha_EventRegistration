@@ -57,13 +57,26 @@ export const registrationStore = {
     }
   },
 
-  register: async (eventId: string): Promise<Registration> => {
-    const { data } = await api.post(`/api/registrations/${eventId}`);
-    return data;
+  register: async (eventId: string) => {
+    try {
+      const { data } = await api.post(
+        `/api/registrations/join/`,
+        { eventId },
+        config,
+      );
+      console.log("Registration response:", data); // Debugging line
+      return data;
+    } catch (error: any) {
+      console.log("Error registering for event:", error.message);
+      return Promise.reject(error.response);
+    }
   },
 
   unregister: async (eventId: string): Promise<boolean> => {
-    const { data } = await api.delete(`/api/registrations/${eventId}`);
+    const { data } = await api.delete(
+      `/api/registrations/join/${eventId}`,
+      config,
+    );
     return data;
   },
 };
