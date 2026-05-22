@@ -7,22 +7,22 @@ export interface User {
 }
 
 export interface Event {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   date: string;
   location: string;
   capacity: number;
-  slug: string;
+  slug?: string;
   organizerId: string;
   organizer?: {
     id: string;
     name: string;
     email: string;
   };
-  createdAt: string;
-  updatedAt: string;
-  _count: {
+  createdAt?: string;
+  updatedAt?: string;
+  _count?: {
     attendees: number;
   };
 }

@@ -39,9 +39,10 @@ export default function EventCard({
     }
   };
 
-  const capacityPercentage = Math.round(
-    (event._count?.attendees / event.capacity) * 100,
-  );
+  const capacityPercentage =
+    event._count && event.capacity
+      ? Math.round((event._count.attendees / event.capacity) * 100)
+      : 0;
 
   return (
     <div className="bg-white border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
@@ -107,13 +108,13 @@ export default function EventCard({
               <>
                 <button
                   onClick={() => navigate(`/edit-event/${event.id}`)}
-                  className="flex-1 bg-secondary text-foreground py-2 rounded-lg hover:bg-primary/10 transition text-sm font-medium"
+                  className="flex-1  border bg-secondary text-foreground py-2 rounded-lg hover:bg-primary/10 transition text-sm font-medium"
                 >
                   Edit
                 </button>
                 <button
                   onClick={onRemove}
-                  className="flex-1 bg-destructive text-white py-2 rounded-lg hover:opacity-90 transition text-sm font-medium"
+                  className="flex-1 bg-destructive border py-2 rounded-lg hover:opacity-90 transition text-sm font-medium"
                 >
                   Delete
                 </button>

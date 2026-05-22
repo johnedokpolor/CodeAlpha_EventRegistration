@@ -55,7 +55,7 @@ export default function AttendeeD() {
     }
   };
 
-  const handleCancelEvent = (eventId: string) => {};
+  const handleCancelEvent = () => {};
   if (registeredEvents.length > 0) {
     console.log("Registered Events:", registeredEvents); // Debugging log
   }
@@ -126,7 +126,7 @@ export default function AttendeeD() {
                     event={event}
                     isRegistered={true}
                     showActions={true}
-                    onRemove={() => handleCancelEvent(event.id)}
+                    onRemove={() => handleCancelEvent()}
                   />
                 ))}
               </div>
@@ -161,9 +161,9 @@ export default function AttendeeD() {
                     key={event.id}
                     event={event}
                     isRegistered={isRegistered}
-                    showActions={true}
+                    showActions={false}
                     onJoin={() => handleJoinEvent(event)}
-                    onRemove={() => handleCancelEvent(event.id)}
+                    onRemove={() => handleCancelEvent()}
                   />
                 );
               })}

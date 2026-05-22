@@ -17,10 +17,11 @@ export default function OrganizerDashboard() {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const userEvents = eventStore.getEventsByOrganizer(user.id);
-      setEvents(userEvents);
-    }
+    const fetchEvents = async () => {
+      const events = await eventStore.getEventsByOrganizer();
+      setEvents(events);
+    };
+    fetchEvents();
   }, [isAuthenticated, user]);
 
   const handleDeleteEvent = (event: Event) => {
@@ -29,7 +30,7 @@ export default function OrganizerDashboard() {
   };
 
   const handleConfirmDelete = () => {
-    if (confirmEvent) {
+    if (confirmEvent?.id) {
       eventStore.deleteEvent(confirmEvent.id);
       setEvents(events.filter((e) => e.id !== confirmEvent.id));
       setConfirmOpen(false);
@@ -37,7 +38,10 @@ export default function OrganizerDashboard() {
     }
   };
 
-  const totalAttendees = events.reduce((sum, e) => sum + e.attendeeCount, 0);
+  const totalAttendees = events.reduce(
+    (sum, e) => sum + (e._count?.attendees ?? 0),
+    0,
+  );
   const totalCapacity = events.reduce((sum, e) => sum + e.capacity, 0);
 
   if (!isAuthenticated) {
@@ -66,7 +70,7 @@ export default function OrganizerDashboard() {
     );
   }
 
-  if (user?.role !== "organizer") {
+  if (user?.role !== "ORGANIZER") {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <Navbar />

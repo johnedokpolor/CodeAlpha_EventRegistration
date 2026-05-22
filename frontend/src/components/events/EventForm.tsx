@@ -4,24 +4,10 @@ import { X } from "lucide-react";
 
 interface EventFormProps {
   event?: Event;
-  onSubmit: (
-    data: Omit<
-      Event,
-      "id" | "createdAt" | "updatedAt" | "attendeeCount" | "organizer"
-    >,
-  ) => void;
+  onSubmit: (data: Event) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
-
-const CATEGORIES = [
-  "Technology",
-  "Design",
-  "Business",
-  "Networking",
-  "Education",
-  "Entertainment",
-];
 
 export default function EventForm({
   event,
@@ -33,11 +19,11 @@ export default function EventForm({
     title: event?.title || "",
     description: event?.description || "",
     date: event?.date || "",
-    time: event?.time || "",
+
     location: event?.location || "",
-    category: event?.category || "Technology",
+
     capacity: event?.capacity || 50,
-    image: event?.image || "",
+
     organizerId: event?.organizerId || "",
   });
 
@@ -50,11 +36,10 @@ export default function EventForm({
     if (!formData.description.trim())
       newErrors.description = "Description is required";
     if (!formData.date) newErrors.date = "Date is required";
-    if (!formData.time) newErrors.time = "Time is required";
-    if (!formData.location.trim()) newErrors.location = "Location is required";
+    if (!formData.location) newErrors.location = "Location is required";
+
     if (formData.capacity < 1)
       newErrors.capacity = "Capacity must be at least 1";
-    if (!formData.image.trim()) newErrors.image = "Image URL is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -65,10 +50,7 @@ export default function EventForm({
 
     if (!validateForm()) return;
 
-    onSubmit({
-      ...formData,
-      capacity: Number(formData.capacity),
-    });
+    onSubmit(formData);
   };
 
   const handleChange = (
@@ -154,64 +136,6 @@ export default function EventForm({
               <p className="text-destructive text-sm mt-1">{errors.date}</p>
             )}
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Time
-            </label>
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                errors.time ? "border-destructive" : "border-border"
-              }`}
-            />
-            {errors.time && (
-              <p className="text-destructive text-sm mt-1">{errors.time}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Location and Category */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Location
-            </label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Event location"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                errors.location ? "border-destructive" : "border-border"
-              }`}
-            />
-            {errors.location && (
-              <p className="text-destructive text-sm mt-1">{errors.location}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Category
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Capacity and Image */}
@@ -234,41 +158,28 @@ export default function EventForm({
               <p className="text-destructive text-sm mt-1">{errors.capacity}</p>
             )}
           </div>
-
+        </div>
+        {/* Location */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
-              Image URL
+              Location
             </label>
             <input
-              type="url"
-              name="image"
-              value={formData.image}
+              type="text"
+              name="location"
+              value={formData.location}
               onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
+              min="1"
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                errors.image ? "border-destructive" : "border-border"
+                errors.location ? "border-destructive" : "border-border"
               }`}
             />
-            {errors.image && (
-              <p className="text-destructive text-sm mt-1">{errors.image}</p>
+            {errors.location && (
+              <p className="text-destructive text-sm mt-1">{errors.location}</p>
             )}
           </div>
         </div>
-
-        {/* Image Preview */}
-        {formData.image && (
-          <div className="border border-border rounded-lg overflow-hidden h-48 bg-secondary">
-            <img
-              src={formData.image}
-              alt="Preview"
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop";
-              }}
-            />
-          </div>
-        )}
 
         {/* Actions */}
         <div className="flex gap-3">
@@ -276,14 +187,14 @@ export default function EventForm({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="flex-1 px-6 py-2 text-foreground bg-secondary hover:bg-secondary/80 rounded-lg transition font-medium disabled:opacity-50"
+            className="flex-1 px-6 py-2  text-foreground bg-secondary border hover:bg-secondary/80 rounded-lg transition font-medium disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 px-6 py-2 text-white bg-primary hover:opacity-90 rounded-lg transition font-medium disabled:opacity-50"
+            className="flex-1 px-6 whitespace-nowrap py-2 border bg-primary hover:opacity-90 rounded-lg transition font-medium disabled:opacity-50"
           >
             {isLoading ? "Saving..." : event ? "Update Event" : "Create Event"}
           </button>

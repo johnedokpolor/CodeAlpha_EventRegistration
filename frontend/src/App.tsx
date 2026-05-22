@@ -16,7 +16,7 @@ function App() {
           <Route path="/organizer" element={<OrganizerDashboard />} />
           <Route path="/attendee" element={<AttendeeD />} />
           <Route path="/create-event" element={<CreateEvent />} />
-          <Route path="/edit-event/:id" element={<CreateEvent />} />
+          <Route path="/edit-event/:slug" element={<CreateEvent />} />
         </Routes>
       </Router>
     </AuthProvider>

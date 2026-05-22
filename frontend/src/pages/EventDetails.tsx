@@ -31,13 +31,13 @@ export default function EventDetails() {
         const events = await eventStore.getAllEvents();
         setRelatedEvents(events);
       };
-      const registerdEvents = async () => {
+      const fetchRegisteredEvents = async () => {
         const events = await registrationStore.getRegistrationsByUser();
         setRegisteredEvents(events);
       };
 
       fetchEvent();
-      registerdEvents();
+      fetchRegisteredEvents();
       fetchRelatedEvents();
       console.log(isAuthenticated, user);
       console.log("Registered Events:", registeredEvents); // Debugging log
@@ -50,8 +50,8 @@ export default function EventDetails() {
         return registeredEvents.some((e) => e.id === event.id);
       });
     }
+    console.log("isregistered", isRegistered);
   }, [event, registeredEvents]);
-  console.log("isregistered", isRegistered);
 
   const handleJoinEvent = () => {
     if (!isAuthenticated) {
@@ -61,25 +61,22 @@ export default function EventDetails() {
     setConfirmOpen(true);
   };
 
-  const handleConfirmJoin = () => {
-    if (user && event && !isRegistered) {
-      setIsLoading(true);
-      registrationStore.register(event.id);
-      // const updated = eventStore.getEventById(event.id);
-      // setEvent(updated || null);
+  const handleConfirmJoin = async () => {
+    if (!event?.id) return;
+    try {
+      const response = await registrationStore.register(event.id);
+
       setIsRegistered(true);
       setConfirmOpen(false);
-      setIsLoading(false);
+    } catch (error) {
+      console.log("Error joining event:", error);
     }
   };
 
-  const handleCancel = () => {
-    if (user && event && isRegistered) {
-      registrationStore.unregister(event.id);
-      // const updated = eventStore.getEventById(event.id);
-      // setEvent(updated || null);
-      setIsRegistered(false);
-    }
+  const handleCancel = async () => {
+    if (!event?.id) return;
+    await registrationStore.unregister(event.id);
+    setIsRegistered(false);
   };
 
   const formatDate = (dateStr: string) => {
@@ -113,9 +110,10 @@ export default function EventDetails() {
     );
   }
 
-  const capacityPercentage = Math.round(
-    (event._count?.attendees / event.capacity) * 100,
-  );
+  const capacityPercentage =
+    event?._count && event.capacity
+      ? Math.round((event._count?.attendees / event.capacity) * 100)
+      : 0;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -210,10 +208,14 @@ export default function EventDetails() {
                     ) : (
                       <button
                         onClick={handleJoinEvent}
-                        disabled={event._count?.attendees >= event.capacity}
+                        disabled={
+                          event._count &&
+                          event._count?.attendees >= event.capacity
+                        }
                         className="w-full bg-primary border px-6 py-3 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {event._count?.attendees >= event.capacity
+                        {event._count &&
+                        event._count?.attendees >= event.capacity
                           ? "Event Full"
                           : "Join Event"}
                       </button>

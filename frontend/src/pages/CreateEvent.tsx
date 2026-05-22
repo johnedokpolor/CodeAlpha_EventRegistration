@@ -9,38 +9,34 @@ import { Event } from "../lib/types";
 import { ArrowLeft, LogIn } from "lucide-react";
 
 export default function CreateEvent() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const foundEvent = eventStore.getEventById(id);
-      setEvent(foundEvent || null);
-    }
-  }, [id]);
+    if (slug) {
+      const fetchEvent = async () => {
+        const foundEvent = await eventStore.getEventById(slug);
+        setEvent(foundEvent || null);
+      };
 
-  const handleSubmit = (
-    formData: Omit<
-      Event,
-      "id" | "createdAt" | "updatedAt" | "attendeeCount" | "organizer"
-    >,
-  ) => {
+      fetchEvent();
+    }
+  }, [slug]);
+
+  const handleSubmit = async (formData: Event) => {
     setIsLoading(true);
 
-    if (event) {
+    if (event?.id) {
       // Update existing event
-      eventStore.updateEvent(event.id, formData);
+      await eventStore.updateEvent(event.id, formData);
       setIsLoading(false);
       navigate("/organizer");
     } else {
       // Create new event
-      const newEvent = eventStore.createEvent({
-        ...formData,
-        organizerId: user?.id || "",
-      });
+      const newEvent = eventStore.createEvent(formData);
       setIsLoading(false);
       navigate("/organizer");
     }
@@ -72,7 +68,7 @@ export default function CreateEvent() {
     );
   }
 
-  if (user?.role !== "organizer") {
+  if (user?.role !== "ORGANIZER") {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <Navbar />

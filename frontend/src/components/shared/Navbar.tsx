@@ -4,16 +4,19 @@ import { useAuth } from "../../context/AuthContext";
 import SigninModal from "../auth/SigninModal";
 import SignupModal from "../auth/SignupModal";
 import { Menu, X, LogOut, Calendar } from "lucide-react";
+import { userStore } from "../../lib/store";
 
 export default function Navbar() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, setUser, setIsAuthenticated, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signinOpen, setSigninOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
 
   const handleLogout = () => {
-    // logout();
+    setUser(null);
+    setIsAuthenticated(false);
+    userStore.logout();
     navigate("/");
   };
 
@@ -60,7 +63,7 @@ export default function Navbar() {
                   {user?.role === "ORGANIZER" && (
                     <button
                       onClick={() => navigate("/create-event")}
-                      className="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
+                      className="bg-primary border px-4 py-2 rounded-lg hover:opacity-90 transition"
                     >
                       Create Event
                     </button>
@@ -88,7 +91,7 @@ export default function Navbar() {
                   </button>
                   <button
                     onClick={() => setSignupOpen(true)}
-                    className="bg-primary  px-4 py-2 rounded-lg hover:opacity-90 transition"
+                    className="bg-primary border px-4 py-2 rounded-lg hover:opacity-90 transition"
                   >
                     Sign Up
                   </button>
@@ -138,7 +141,7 @@ export default function Navbar() {
                         navigate("/create-event");
                         setMobileMenuOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 bg-primary text-white rounded hover:opacity-90"
+                      className="block w-full text-left px-4 py-2  rounded hover:opacity-90"
                     >
                       Create Event
                     </button>
@@ -169,7 +172,7 @@ export default function Navbar() {
                       setSignupOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 bg-primary  rounded hover:opacity-90"
+                    className="block w-full text-left px-4 py-2 bg-primary rounded hover:opacity-90"
                   >
                     Sign Up
                   </button>

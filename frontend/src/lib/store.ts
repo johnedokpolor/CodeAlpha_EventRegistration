@@ -24,24 +24,43 @@ export const eventStore = {
     return data.data;
   },
 
-  getEventsByOrganizer: async (): Promise<Event[]> => {
-    const { data } = await api.get(`/api/events/me`);
+  getEventsByOrganizer: async () => {
+    const { data } = await api.get(`/api/events/me`, config);
     return data.data;
   },
 
-  createEvent: async (event: Event): Promise<Event> => {
-    const { data } = await api.post("/api/events/me", event);
-    return data.data;
+  createEvent: async (event: Event) => {
+    try {
+      const { data } = await api.post("/api/events/me", event, config);
+      console.log("Create event response:", data); // Debugging line
+      return data.data;
+    } catch (error: any) {
+      console.error("Error creating event:", error.message); // Debugging line
+      return error.message;
+    }
   },
 
-  updateEvent: async (id: string, updates: Event): Promise<Event> => {
-    const { data } = await api.put(`/api/events/${id}`, updates);
-    return data.data;
+  updateEvent: async (id: string, updates: Event) => {
+    try {
+      const { data } = await api.put(`/api/events/me${id}`, updates, config);
+      console.log("update event response", data);
+
+      return data.data;
+    } catch (error: any) {
+      console.error("Error updating event:", error.message); // Debugging line
+      return error.message;
+    }
   },
 
   deleteEvent: async (id: string): Promise<Event> => {
-    const { data } = await api.delete(`/api/events/${id}`);
-    return data.data;
+    try {
+      const { data } = await api.delete(`/api/events/me${id}`, config);
+      console.log("delete event response", data);
+      return data.data;
+    } catch (error: any) {
+      console.log("delete event error", error.message);
+      return error.message;
+    }
   },
 };
 
@@ -77,6 +96,7 @@ export const registrationStore = {
       `/api/registrations/join/${eventId}`,
       config,
     );
+    console.log(data);
     return data;
   },
 };
@@ -87,7 +107,7 @@ export const userStore = {
     try {
       const { data } = await api.get(`/api/auth/me`, config);
       console.log("Current user:", data); // Debugging line
-      return data;
+      return data.user;
     } catch (error: any) {
       console.log("Error fetching current user:", error.message); // Debugging line
 
