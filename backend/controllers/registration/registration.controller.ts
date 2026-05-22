@@ -31,8 +31,8 @@ export const ViewEvents = asyncHandler(async (req, res) => {
   const events = await prisma.event.findMany({
     where: {
       attendees: { some: { userId: req.user.id } },
-      include: { _count: { select: { attendees: true } } },
     },
+    include: { _count: { select: { attendees: true } } },
   });
   if (!events) throw new ErrorResponse("Events not found", 404);
 
