@@ -11,7 +11,7 @@ export default function Hero() {
 
   const handleCTA = () => {
     if (isAuthenticated) {
-      if (user?.role === "organizer") {
+      if (user?.role === "ORGANIZER") {
         navigate("/create-event");
       } else {
         navigate("/attendee");

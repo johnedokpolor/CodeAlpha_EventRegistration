@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Event } from "../../lib/types";
-import { X } from "lucide-react";
 
 interface EventFormProps {
   event?: Event;
@@ -44,6 +43,7 @@ export default function EventForm({
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  console.log("formdata", formData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,5 @@
-import { useAuth } from "../context/AuthContext";
 import api from "../hooks/axios-instance";
-import { Event, User, Registration } from "./types";
+import { Event, User } from "./types";
 
 const token = localStorage.getItem("token");
 if (!token) {

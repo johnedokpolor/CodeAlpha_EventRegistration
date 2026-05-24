@@ -113,7 +113,7 @@ export default function OrganizerDashboard() {
           </div>
           <button
             onClick={() => navigate("/create-event")}
-            className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-medium whitespace-nowrap"
+            className="flex items-center gap-2 bg-primary border px-6 py-3 rounded-lg hover:opacity-90 transition font-medium whitespace-nowrap"
           >
             <Plus className="w-5 h-5" />
             Create New Event

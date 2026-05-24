@@ -1,10 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SignupModal from "../auth/SignupModal";
-import { ArrowRight, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export default function CTASection() {
-  const navigate = useNavigate();
   const [signupOpen, setSignupOpen] = useState(false);
 
   return (

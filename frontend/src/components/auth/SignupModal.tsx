@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { userStore } from "../../lib/store";
 
@@ -15,7 +13,6 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

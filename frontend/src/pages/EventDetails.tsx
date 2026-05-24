@@ -16,7 +16,6 @@ export default function EventDetails() {
   const [event, setEvent] = useState<Event | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
   const [relatedEvents, setRelatedEvents] = useState<Event[]>([]);
 
@@ -64,7 +63,7 @@ export default function EventDetails() {
   const handleConfirmJoin = async () => {
     if (!event?.id) return;
     try {
-      const response = await registrationStore.register(event.id);
+      await registrationStore.register(event.id);
 
       setIsRegistered(true);
       setConfirmOpen(false);
