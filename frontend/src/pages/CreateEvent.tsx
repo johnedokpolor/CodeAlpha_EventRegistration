@@ -36,7 +36,7 @@ export default function CreateEvent() {
       navigate("/organizer");
     } else {
       // Create new event
-      const newEvent = eventStore.createEvent(formData);
+      await eventStore.createEvent(formData);
       setIsLoading(false);
       navigate("/organizer");
     }
