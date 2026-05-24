@@ -26,6 +26,13 @@ export interface Event {
     attendees: number;
   };
 }
+export interface FormEvent {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  capacity: number;
+}
 
 export interface Registration {
   id: string;

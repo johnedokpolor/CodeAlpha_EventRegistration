@@ -5,7 +5,7 @@ import Footer from "../components/shared/Footer";
 import EventForm from "../components/events/EventForm";
 import { useAuth } from "../context/AuthContext";
 import { eventStore } from "../lib/store";
-import { Event } from "../lib/types";
+import { Event, FormEvent } from "../lib/types";
 import { ArrowLeft, LogIn } from "lucide-react";
 
 export default function CreateEvent() {
@@ -19,14 +19,16 @@ export default function CreateEvent() {
     if (slug) {
       const fetchEvent = async () => {
         const foundEvent = await eventStore.getEventById(slug);
+
         setEvent(foundEvent || null);
       };
 
+      console.log("hits");
       fetchEvent();
     }
   }, [slug]);
 
-  const handleSubmit = async (formData: Event) => {
+  const handleSubmit = async (formData: FormEvent) => {
     setIsLoading(true);
 
     if (event?.id) {

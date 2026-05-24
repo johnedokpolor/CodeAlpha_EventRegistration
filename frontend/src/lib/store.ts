@@ -1,5 +1,5 @@
 import api from "../hooks/axios-instance";
-import { Event, User } from "./types";
+import { Event, FormEvent, User } from "./types";
 
 const token = localStorage.getItem("token");
 if (!token) {
@@ -28,7 +28,7 @@ export const eventStore = {
     return data.data;
   },
 
-  createEvent: async (event: Event) => {
+  createEvent: async (event: FormEvent) => {
     try {
       const { data } = await api.post("/api/events/me", event, config);
       console.log("Create event response:", data); // Debugging line
@@ -39,21 +39,21 @@ export const eventStore = {
     }
   },
 
-  updateEvent: async (id: string, updates: Event) => {
+  updateEvent: async (id: string, updates: FormEvent) => {
     try {
-      const { data } = await api.put(`/api/events/me${id}`, updates, config);
+      const { data } = await api.put(`/api/events/me/${id}`, updates, config);
       console.log("update event response", data);
 
       return data.data;
     } catch (error: any) {
-      console.error("Error updating event:", error.message); // Debugging line
+      console.log("Error updating event:", error.message); // Debugging line
       return error.message;
     }
   },
 
   deleteEvent: async (id: string): Promise<Event> => {
     try {
-      const { data } = await api.delete(`/api/events/me${id}`, config);
+      const { data } = await api.delete(`/api/events/me/${id}`, config);
       console.log("delete event response", data);
       return data.data;
     } catch (error: any) {

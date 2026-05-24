@@ -107,7 +107,7 @@ export default function EventCard({
             {isOrganizerView ? (
               <>
                 <button
-                  onClick={() => navigate(`/edit-event/${event.id}`)}
+                  onClick={() => navigate(`/edit-event/${event.slug}`)}
                   className="flex-1  border bg-secondary text-foreground py-2 rounded-lg hover:bg-primary/10 transition text-sm font-medium"
                 >
                   Edit

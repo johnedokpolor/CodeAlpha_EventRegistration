@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Event } from "../../lib/types";
+import { useEffect, useState } from "react";
+import { Event, FormEvent } from "../../lib/types";
 
 interface EventFormProps {
   event?: Event;
-  onSubmit: (data: Event) => void;
+  onSubmit: (data: FormEvent) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -14,16 +14,26 @@ export default function EventForm({
   onCancel,
   isLoading = false,
 }: EventFormProps) {
+  console.log(event);
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        title: event.title,
+        description: event.description,
+        date: event.date.split("T")[0],
+        location: event.location,
+        capacity: event.capacity,
+      });
+    }
+  }, [event]);
+
   const [formData, setFormData] = useState({
-    title: event?.title || "",
-    description: event?.description || "",
-    date: event?.date || "",
-
-    location: event?.location || "",
-
-    capacity: event?.capacity || 50,
-
-    organizerId: event?.organizerId || "",
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    capacity: 0,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -31,7 +41,8 @@ export default function EventForm({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.title.trim()) newErrors.title = "Event title is required";
+    if (formData.title && !formData.title.trim())
+      newErrors.title = "Event title is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
     if (!formData.date) newErrors.date = "Date is required";
@@ -50,7 +61,11 @@ export default function EventForm({
 
     if (!validateForm()) return;
 
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      capacity: Number(formData.capacity),
+      date: new Date(formData.date).toISOString(),
+    });
   };
 
   const handleChange = (

@@ -29,9 +29,9 @@ export default function OrganizerDashboard() {
     setConfirmOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (confirmEvent?.id) {
-      eventStore.deleteEvent(confirmEvent.id);
+      await eventStore.deleteEvent(confirmEvent.id);
       setEvents(events.filter((e) => e.id !== confirmEvent.id));
       setConfirmOpen(false);
       setConfirmEvent(null);
